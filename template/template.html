@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>查看您的日程</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://libs.cdnjs.net/materialize/1.0.0-rc.2/css/materialize.min.css" rel="stylesheet">
+  <script src="https://libs.cdnjs.net/jquery/3.4.0/jquery.min.js"></script>
+  <script src="https://libs.cdnjs.net/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+  <div class="row">
+    <ul class="tabs">
+      <li class="tab col s2 offset-s2"><a href="#today" class="active"><i class="material-icons"
+            style="vertical-align: middle">
+            today
+          </i><b style="vertical-align: middle">今日</b> </a></li>
+      <li class="tab col s2"><a href="#next"> <i class="material-icons" style="vertical-align: middle">
+            schedule
+          </i><b style="vertical-align: middle">七天</b> </a></li>
+      <li class="tab col s2"><a href="#all"><i class="material-icons" style="vertical-align: middle">
+            all_inbox
+          </i><b style="vertical-align: middle">所有</b> </a></li>
+      <li class="tab col s2"><a href="#course"><i class="material-icons" style="vertical-align: middle">
+            school
+          </i><b style="vertical-align: middle">课程表</b> </a></li>
+    </ul>
+  </div>
+  <div class="row">
+    <div class="col s10 offset-s1">
+      <br><br>
+      <div id="today">
+        <div class="col s10 offset-s1 card-panel">
+          <ul class="collapsible">
+            {{each todays today i}}
+            <li>
+              <div class="collapsible-header"><i class="material-icons">hourglass_empty</i>
+                <span
+                  style="max-width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{today[0]}}&nbsp;&nbsp;|&nbsp;&nbsp;{{today[1]}}</span>
+              </div>
+              <div class="collapsible-body"><span>{{today[1]}}</span><br><br><a
+                  class="btn-floating btn-middle waves-effect waves-light red" style="margin-left: 95%;"><i
+                    class="material-icons" onclick="setToDone('{{today[2]}}')">done</i></a>
+              </div>
+            </li>
+            {{/each}}
+          </ul>
+        </div>
+      </div>
+      <div id="next">
+        <div class="col s10 offset-s1 card-panel">
+          <ul class="collapsible">
+            {{each nexts next i}}
+            <li>
+              <div class="collapsible-header"><i class="material-icons">hourglass_empty</i><span
+                  style="max-width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{next[0]}}&nbsp;&nbsp;|&nbsp;&nbsp;{{next[1]}}</span>
+              </div>
+              <div class="collapsible-body"><span>{{next[1]}}</span><br><br><a
+                  class="btn-floating btn-middle waves-effect waves-light red" style="margin-left: 95%;"><i
+                    class="material-icons" onclick="setToDone('{{next[2]}}')">done</i></a>
+              </div>
+            </li>
+            {{/each}}
+          </ul>
+        </div>
+      </div>
+      <div id="all">
+        <div class="col s10 offset-s1 card-panel">
+          <ul class="collapsible">
+            {{each alls all i}}
+            <li>
+              <div class="collapsible-header"><i class="material-icons">hourglass_empty</i><span
+                  style="max-width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{all[0]}}&nbsp;&nbsp;|&nbsp;&nbsp;{{all[1]}}</span>
+
+              </div>
+              <div class="collapsible-body"><span>{{all[1]}}</span><br><br><a
+                  class="btn-floating btn-middle waves-effect waves-light red" style="margin-left: 95%;"><i
+                    class="material-icons" onclick="setToDone('{{all[2]}}')">done</i></a>
+              </div>
+            </li>
+            {{/each}}
+          </ul>
+        </div>
+      </div>
+      <div id="course">
+        <div class="col s10 offset-s1 card-panel">
+          <ul class="collection with-header">
+            <li class="collection-header">
+              <h5>今日课程</h5>
+            </li>
+            {{each todayCours todayCour i}}
+            <li class="collection-item">{{todayCour}}</li>
+            {{/each}}
+          </ul>
+          <ul class="collection with-header">
+            <li class="collection-header">
+              <h5>明日课程</h5>
+            </li>
+            {{each tomoCours tomoCour i}}
+            <li class="collection-item">{{tomoCour}}</li>
+            {{/each}}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="fixed-action-btn">
+    <!-- Modal Trigger -->
+    <a class="btn-floating btn-large red waves-effect waves-light modal-trigger" href="#modal1">
+      <i class="large material-icons">add</i>
+    </a>
+    <ul>
+      <li><a class="btn-floating blue waves-effect waves-light modal-trigger" href="#modal2">
+          <i class="material-icons">publish</i></a></li>
+    </ul>
+  </div>
+  <!-- Modal Structure -->
+  <div id="modal1" class="modal">
+    <div class="modal-content">
+      <h5>添加新日程</h5>
+      <p>
+        <div class="row">
+          <form class="col s12">
+            <div class="row">
+              <div class="input-field col s12">
+                <i class="material-icons prefix">add_circle_outline</i>
+                <textarea id="icon_prefix2" class="materialize-textarea"></textarea>
+                <label for="icon_prefix2">您要做什么...？[将自动识别文本中的时间信息]</label>
+              </div>
+            </div>
+          </form>
+        </div>
+      </p>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat" onclick="addNewSchedule()">确定添加</a>
+    </div>
+  </div>
+  <!-- Modal Structure -->
+  <div id="modal2" class="modal">
+    <div class="modal-content">
+      <h5>上传课程表</h5>
+      <p>
+        <div class="row">
+          <form class="col s12">
+            <div class="row">
+              <div class="input-field col s12">
+                <i class="material-icons prefix">cloud_upload</i>
+                <textarea id="icon_prefix3" class="materialize-textarea"></textarea>
+                <label for="icon_prefix3">请粘贴JSON格式的课程信息</label>
+              </div>
+            </div>
+          </form>
+        </div>
+      </p>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat" onclick="uploadCours()">上传</a>
+    </div>
+  </div>
+</body>
+<script>
+  $(document).ready(function () {
+    M.AutoInit();
+  });
+
+
+  let url = window.location.pathname
+  let uid = url.substr(url.lastIndexOf('/') + 1)
+  function setToDone(id) {
+    axios.post('/schedule/done', { uid, data: id }).catch((err) => { alert(err) }).then((res) => {
+      M.toast({ html: '已将一项日程标记为 已完成 .' })
+    })
+  }
+  function addNewSchedule() {
+    let input = $('#icon_prefix2').val()
+    axios.post('/schedule/add', { uid, data: input }).catch((err) => { alert(err) }).then((res) => {
+      M.toast({ html: res.data.info })
+      console.log(res)
+    })
+  }
+  function uploadCours() {
+    let json = $('#icon_prefix3').val()
+    axios.post('/cours/upload', { uid, data: json }).catch((err) => { alert(err) }).then((res) => {
+      M.toast({ html: '已上传您的新课表' })
+    })
+  }
+</script>
+
+</html>
